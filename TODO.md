@@ -90,10 +90,12 @@
 
   ✅ 完了日: 2025-10-06
 
-- [ ] 13. ReadStatusモデル定義
+- [x] 13. ReadStatusモデル定義
   - id, userId, articleId
   - readAt
   - @@unique([userId, articleId])
+
+  ✅ 完了日: 2025-10-06
 
 - [ ] 14. Article用インデックス作成
   - @@index([feedId, pubDate(sort: Desc)])
@@ -294,7 +296,7 @@
 進捗: 7/7 (100%) ✅ 完了
 
 ### Phase 2: データモデル実装
-進捗: 5/11 (45%)
+進捗: 6/11 (55%)
 
 ### Phase 3: コアAPI実装
 進捗: 0/10 (0%)
@@ -305,7 +307,7 @@
 ### Phase 5: PWA機能実装
 進捗: 0/9 (0%)
 
-**総進捗: 12/56 (21%)**
+**総進捗: 13/56 (23%)**
 
 ---
 

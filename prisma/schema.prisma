@@ -17,8 +17,9 @@ model User {
   image         String?
   emailVerified DateTime?
 
-  groups Group[]
-  // readStatuses, accounts, sessions は Task 13, 16 で追加予定
+  groups       Group[]
+  readStatuses ReadStatus[]
+  // accounts, sessions は Task 16 で追加予定
 }
 
 model Group {
@@ -73,8 +74,22 @@ model Article {
   pubDate     DateTime?
   createdAt   DateTime  @default(now())
 
-  feed Feed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  feed         Feed         @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  readStatuses ReadStatus[]
 
   @@index([feedId, pubDate(sort: Desc)])
   @@index([createdAt(sort: Desc)])
+}
+
+model ReadStatus {
+  id        String   @id @default(cuid())
+  userId    String
+  articleId String
+  readAt    DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+  @@index([userId, readAt(sort: Desc)])
 }
