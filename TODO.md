@@ -19,9 +19,11 @@
   ```
   ✅ 完了日: 2025-10-05
 
-- [ ] 3. prisma/schema.prisma作成
+- [x] 3. prisma/schema.prisma作成
   - provider: mysql
   - TiDB互換設定
+  
+  ✅ 完了日: 2025-10-05
 
 - [ ] 4. 環境変数テンプレート .env.example作成
   - DATABASE_URL
