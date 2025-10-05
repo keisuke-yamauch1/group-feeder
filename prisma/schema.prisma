@@ -10,4 +10,71 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Data models will be added in Phase 2 (Tasks 8-18)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+
+  groups Group[]
+  // readStatuses, accounts, sessions は Task 13, 16 で追加予定
+}
+
+model Group {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  name      String
+  sortIndex Int      // タブの並び順
+  createdAt DateTime @default(now())
+
+  user  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feeds GroupFeed[]
+
+  @@index([userId, sortIndex])
+}
+
+model Feed {
+  id            Int       @id @default(autoincrement())
+  url           String    @unique
+  title         String
+  description   String?   @db.Text
+  lastFetchedAt DateTime?
+  etag          String?   // HTTP ETag for conditional GET
+  lastModified  String?   // HTTP Last-Modified
+  createdAt     DateTime  @default(now())
+
+  groups   GroupFeed[]
+  articles Article[]
+}
+
+model GroupFeed {
+  groupId Int
+  feedId  Int
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  feed  Feed  @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, feedId])
+  @@index([groupId])
+  @@index([feedId])
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  feedId      Int
+  guid        String?   @unique  // RSS GUID（最優先）
+  link        String    @unique  // フォールバック
+  contentHash String?   // 最終フォールバック（title+description+pubDateのCRC）
+  title       String
+  description String?   @db.Text
+  content     String?   @db.Text
+  author      String?
+  pubDate     DateTime?
+  createdAt   DateTime  @default(now())
+
+  feed Feed @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@index([feedId, pubDate(sort: Desc)])
+  @@index([createdAt(sort: Desc)])
+}

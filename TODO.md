@@ -55,30 +55,40 @@
 
 ## Phase 2: データモデル実装 (11タスク)
 
-- [ ] 8. Userモデル定義
+- [x] 8. Userモデル定義
   - id: String @id @default(cuid())
   - email: String @unique
   - name, image
 
-- [ ] 9. Groupモデル定義
+  ✅ 完了日: 2025-10-06
+
+- [x] 9. Groupモデル定義
   - id: Int @id @default(autoincrement())
   - userId, name, sortIndex
 
-- [ ] 10. Feedモデル定義
+  ✅ 完了日: 2025-10-06
+
+- [x] 10. Feedモデル定義
   - id: Int @id
   - url: String @unique
   - title, lastFetchedAt: DateTime?
 
-- [ ] 11. GroupFeedモデル定義
+  ✅ 完了日: 2025-10-06
+
+- [x] 11. GroupFeedモデル定義
   - groupId, feedId
   - @@id([groupId, feedId]) 中間テーブル
 
-- [ ] 12. Articleモデル定義
+  ✅ 完了日: 2025-10-06
+
+- [x] 12. Articleモデル定義
   - id, feedId
   - guid?: String @unique
   - link: String @unique
   - contentHash?, title, description, content
   - author?, pubDate?, createdAt
+
+  ✅ 完了日: 2025-10-06
 
 - [ ] 13. ReadStatusモデル定義
   - id, userId, articleId
@@ -284,7 +294,7 @@
 進捗: 7/7 (100%) ✅ 完了
 
 ### Phase 2: データモデル実装
-進捗: 0/11 (0%)
+進捗: 5/11 (45%)
 
 ### Phase 3: コアAPI実装
 進捗: 0/10 (0%)
@@ -295,7 +305,7 @@
 ### Phase 5: PWA機能実装
 進捗: 0/9 (0%)
 
-**総進捗: 7/56 (13%)**
+**総進捗: 12/56 (21%)**
 
 ---
 
