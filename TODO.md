@@ -1,7 +1,7 @@
 # GroupFeeder 実装TODOリスト
 
 **作成日**: 2025-10-05
-**総タスク数**: 56
+**総タスク数**: 58
 
 ---
 
@@ -114,13 +114,23 @@
 
   ✅ 完了日: 2025-10-06
 
-- [ ] 17. Prismaマイグレーション実行
+---
+
+## Phase 2.5: データベースセットアップ (3タスク)
+
+- [ ] 17. .envファイル作成
+  - .env.exampleをコピーして.envを作成
+  - DATABASE_URL設定（TiDB or ローカルMySQL）
+  - NEXTAUTH_SECRET生成: `openssl rand -base64 32`
+  - Google OAuth認証情報設定
+
+- [ ] 18. Prismaマイグレーション実行
   ```bash
   npx prisma migrate dev --name init
   ```
-  - TiDB制限に注意
+  - TiDB制限に注意（FULLTEXT警告は無視）
 
-- [ ] 18. lib/prisma.ts作成
+- [ ] 19. lib/prisma.ts作成
   - PrismaClientシングルトンインスタンス
   - @tidbcloud/prisma-adapter統合
 
@@ -128,46 +138,46 @@
 
 ## Phase 3: コアAPI実装 (10タスク)
 
-- [ ] 19. app/api/group/route.ts作成
+- [ ] 20. app/api/group/route.ts作成
   - POST: グループ新規作成
   - userId取得
   - sortIndex自動設定
 
-- [ ] 20. app/api/group/[id]/route.ts作成
+- [ ] 21. app/api/group/[id]/route.ts作成
   - PUT: グループ名変更
   - PATCH: sortIndex一括更新
 
-- [ ] 21. app/api/feed/route.ts作成
+- [ ] 22. app/api/feed/route.ts作成
   - POST: フィードURL登録
   - Feedsmith検証
   - グループ割り当て
 
-- [ ] 22. app/api/read-status/route.ts作成
+- [ ] 23. app/api/read-status/route.ts作成
   - PUT: 既読状態更新
   - バッチ更新対応 - 複数articleId配列受付
 
-- [ ] 23. Feedsmithインストール
+- [ ] 24. Feedsmithインストール
   ```bash
   npm install feedsmith
   ```
 
-- [ ] 24. DOMPurifyインストール
+- [ ] 25. DOMPurifyインストール
   ```bash
   npm install isomorphic-dompurify
   ```
 
-- [ ] 25. lib/feed-fetcher.ts作成
+- [ ] 26. lib/feed-fetcher.ts作成
   - Feedsmith使用
   - 階層的重複検出: guid→link→contentHash
 
-- [ ] 26. lib/content-hash.ts作成
+- [ ] 27. lib/content-hash.ts作成
   - title+description+pubDateからCRCハッシュ生成関数
 
-- [ ] 27. lib/sanitize.ts作成
+- [ ] 28. lib/sanitize.ts作成
   - DOMPurifyラッパー
   - HTMLサニタイズ関数
 
-- [ ] 28. app/api/feeds/fetch/route.ts作成
+- [ ] 29. app/api/feeds/fetch/route.ts作成
   - 全フィード巡回
   - 15分間隔制御
   - ETag/Last-Modified対応
@@ -176,122 +186,122 @@
 
 ## Phase 4: フロントエンド実装 (18タスク)
 
-- [ ] 29. app/page.tsx作成
+- [ ] 30. app/page.tsx作成
   - 未認証: Google Loginボタン表示
   - 認証済み: /dashboardリダイレクト
 
-- [ ] 30. components/auth/LoginButton.tsx作成
+- [ ] 31. components/auth/LoginButton.tsx作成
   - signIn('google')呼び出し
 
-- [ ] 31. middleware.ts作成
+- [ ] 32. middleware.ts作成
   - 認証保護ルート設定
   - /dashboard/*を保護
 
-- [ ] 32. app/dashboard/page.tsx作成
+- [ ] 33. app/dashboard/page.tsx作成
   - 記事一覧メイン画面
   - タブ切り替えUI配置
 
-- [ ] 33. app/dashboard/settings/page.tsx作成
+- [ ] 34. app/dashboard/settings/page.tsx作成
   - グループ/フィード管理画面
 
-- [ ] 34. components/group/GroupList.tsx作成
+- [ ] 35. components/group/GroupList.tsx作成
   - グループ一覧表示
   - ドラッグ&ドロップ並び替え - @dnd-kit/core使用
 
-- [ ] 35. @dnd-kit/coreインストール
+- [ ] 36. @dnd-kit/coreインストール
   ```bash
   npm install @dnd-kit/core @dnd-kit/sortable
   ```
 
-- [ ] 36. components/group/GroupForm.tsx作成
+- [ ] 37. components/group/GroupForm.tsx作成
   - グループ名入力フォーム
   - 作成/編集モード対応
 
-- [ ] 37. components/feed/FeedForm.tsx作成
+- [ ] 38. components/feed/FeedForm.tsx作成
   - フィードURL入力
   - グループ選択ドロップダウン
 
-- [ ] 38. components/feed/FeedList.tsx作成
+- [ ] 39. components/feed/FeedList.tsx作成
   - フィード一覧
   - グループ別表示
   - 削除ボタン
 
-- [ ] 39. components/article/ArticleTabs.tsx作成
+- [ ] 40. components/article/ArticleTabs.tsx作成
   - 全て/ユーザーグループ/未分類タブ切り替え
 
-- [ ] 40. components/article/ArticleList.tsx作成
+- [ ] 41. components/article/ArticleList.tsx作成
   - 記事一覧
   - タブ選択に応じたフィルタリング
 
-- [ ] 41. components/article/ArticleCard.tsx作成
+- [ ] 42. components/article/ArticleCard.tsx作成
   - 記事カード
   - data-article-id属性付与
   - Intersection Observer用
 
-- [ ] 42. hooks/useIntersectionObserver.ts作成
+- [ ] 43. hooks/useIntersectionObserver.ts作成
   - 共有Observer
   - threshold: 0.5
   - 500msデバウンス
 
-- [ ] 43. hooks/useReadStatusBatch.ts作成
+- [ ] 44. hooks/useReadStatusBatch.ts作成
   - 既読状態バッチ更新Hook
   - Set<articleId>キューイング
 
-- [ ] 44. components/article/ReadToggle.tsx作成
+- [ ] 45. components/article/ReadToggle.tsx作成
   - 既読/未読フィルタートグルボタン
 
 ---
 
-## Phase 5: PWA機能実装 (9タスク)
+## Phase 5: PWA機能実装 (11タスク)
 
-- [ ] 45. app/manifest.ts作成
+- [ ] 46. app/manifest.ts作成
   - name: GroupFeeder
   - short_name, theme_color, background_color
   - display: standalone
   - icons配置
 
-- [ ] 46. public/icons/配下にPWAアイコン配置
+- [ ] 47. public/icons/配下にPWAアイコン配置
   - 192x192
   - 512x512
   - maskable対応
 
-- [ ] 47. Workboxインストール
+- [ ] 48. Workboxインストール
   ```bash
   npm install workbox-webpack-plugin workbox-window
   ```
 
-- [ ] 48. public/sw.js作成
+- [ ] 49. public/sw.js作成
   - Service Worker本体
   - Workboxインポート
   - キャッシング戦略定義
 
-- [ ] 49. Service Workerキャッシング戦略実装
+- [ ] 50. Service Workerキャッシング戦略実装
   - NetworkFirst: API
   - CacheFirst: 静的アセット
 
-- [ ] 50. app/layout.tsx内でService Worker登録
+- [ ] 51. app/layout.tsx内でService Worker登録
   - useEffect内でnavigator.serviceWorker.register('/sw.js')
 
-- [ ] 51. components/pwa/InstallButton.tsx作成
+- [ ] 52. components/pwa/InstallButton.tsx作成
   - beforeinstallpromptイベントハンドリング
   - インストールプロンプト表示
 
-- [ ] 52. public/sw.js内にBadging API実装
+- [ ] 53. public/sw.js内にBadging API実装
   - self.addEventListener('message', setAppBadge処理)
 
-- [ ] 53. hooks/useBadgeUpdate.ts作成
+- [ ] 54. hooks/useBadgeUpdate.ts作成
   - 未読数取得
   - navigator.setAppBadge()呼び出し
   - 機能検出
 
-- [ ] 54. app/dashboard/page.tsx内でuseBadgeUpdate統合
+- [ ] 55. app/dashboard/page.tsx内でuseBadgeUpdate統合
   - 記事一覧読み込み時に未読数更新
 
-- [ ] 55. lib/security/url-validator.ts作成
+- [ ] 56. lib/security/url-validator.ts作成
   - SSRF対策: http/httpsのみ許可
   - 内部IPアドレス拒否
 
-- [ ] 56. next.config.js内にCSP設定追加
+- [ ] 57. next.config.js内にCSP設定追加
   - Content-Security-Policy headers
 
 ---
@@ -302,7 +312,10 @@
 進捗: 7/7 (100%) ✅ 完了
 
 ### Phase 2: データモデル実装
-進捗: 9/11 (82%)
+進捗: 9/9 (100%) ✅ 完了
+
+### Phase 2.5: データベースセットアップ
+進捗: 0/3 (0%)
 
 ### Phase 3: コアAPI実装
 進捗: 0/10 (0%)
@@ -311,9 +324,9 @@
 進捗: 0/18 (0%)
 
 ### Phase 5: PWA機能実装
-進捗: 0/9 (0%)
+進捗: 0/11 (0%)
 
-**総進捗: 16/56 (29%)**
+**総進捗: 16/58 (28%)**
 
 ---
 
@@ -336,4 +349,4 @@
 
 ---
 
-**最終更新**: 2025-10-06 (Task16完了)
+**最終更新**: 2025-10-06 (Phase 2完了、Phase 2.5追加によるタスク再構成)

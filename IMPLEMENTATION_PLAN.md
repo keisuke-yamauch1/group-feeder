@@ -4,6 +4,8 @@
 PWA対応のRSSフィーダーアプリ「GroupFeeder」の完全実装計画。
 Next.js 15 (App Router) + TiDB + NextAuth.js v5を使用したモダンなフィード管理システム。
 
+**総タスク数**: 58 (Phase 2.5追加により56→58に更新)
+
 ---
 
 ## Phase 1: プロジェクト初期化 (7タスク)
@@ -210,15 +212,68 @@ model VerificationToken {
 }
 ```
 
-### 17. Prismaマイグレーション実行
+---
+
+## Phase 2.5: データベースセットアップ (3タスク)
+
+### 17. .envファイル作成
+
+#### 手順
+1. .env.exampleをコピー
+```bash
+cp .env.example .env
+```
+
+2. DATABASE_URL設定
+
+**オプションA: TiDB使用**
+```env
+DATABASE_URL="mysql://user:password@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/group_feeder?sslaccept=strict"
+```
+
+**オプションB: ローカルMySQL使用**
+```env
+DATABASE_URL="mysql://root:password@localhost:3306/group_feeder"
+```
+
+**オプションC: SQLiteでクイックスタート（開発用）**
+```env
+DATABASE_URL="file:./dev.db"
+```
+注: SQLiteを使う場合はschema.prismaのproviderを一時的に"sqlite"に変更
+
+3. NEXTAUTH_SECRET生成
+```bash
+openssl rand -base64 32
+```
+生成された値を.envに設定:
+```env
+NEXTAUTH_SECRET="生成された値"
+```
+
+4. Google OAuth設定
+- [Google Cloud Console](https://console.cloud.google.com/apis/credentials) でOAuth 2.0クライアントIDを作成
+- 認証済みリダイレクトURI: `http://localhost:3000/api/auth/callback/google`
+- クライアントIDとシークレットを.envに設定
+
+### 18. Prismaマイグレーション実行
 ```bash
 npx prisma migrate dev --name init
 ```
-**TiDB制限に注意:**
-- FULLTEXT非対応（警告が出るが無視）
-- ALTER TABLEの多重変更不可（1操作ずつ実行）
 
-### 18. lib/prisma.ts作成
+**TiDB制限に注意:**
+- FULLTEXT非対応（警告が出るが無視してOK）
+- ALTER TABLEの多重変更不可（1操作ずつ実行）
+- 外部キー制約はv8.5.0以降でサポート
+
+**エラー対処:**
+マイグレーションでエラーが出た場合:
+```bash
+# 代替案: db push を使用（開発環境のみ）
+npx prisma db push --accept-data-loss
+```
+
+### 19. lib/prisma.ts作成
 ```typescript
 import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@tidbcloud/prisma-adapter'
@@ -234,11 +289,16 @@ export const prisma = globalForPrisma.prisma ?? new PrismaClient({
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
 
+**補足:**
+- `globalForPrisma`パターンは開発時のホットリロード対策
+- TiDB使用時は`@tidbcloud/prisma-adapter`が性能最適化を提供
+- ローカルMySQL/SQLiteの場合はadapterを省略可能
+
 ---
 
 ## Phase 3: コアAPI実装 (10タスク)
 
-### 19. app/api/group/route.ts作成
+### 20. app/api/group/route.ts作成
 ```typescript
 // POST: グループ新規作成
 - NextAuthからuserId取得
@@ -246,7 +306,7 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 - { name: string } をリクエストボディで受け取る
 ```
 
-### 20. app/api/group/[id]/route.ts作成
+### 21. app/api/group/[id]/route.ts作成
 ```typescript
 // PUT: グループ名変更
 - { name: string }
@@ -256,7 +316,7 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 - ドラッグ&ドロップ後の並び順を一括更新
 ```
 
-### 21. app/api/feed/route.ts作成
+### 22. app/api/feed/route.ts作成
 ```typescript
 // POST: フィードURL登録
 - { url: string, groupIds?: number[] }
@@ -265,7 +325,7 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 - groupIdsが指定されていればGroupFeedレコード作成
 ```
 
-### 22. app/api/read-status/route.ts作成
+### 23. app/api/read-status/route.ts作成
 ```typescript
 // PUT: 既読状態更新（バッチ対応）
 - { articleIds: string[], isRead: boolean }
@@ -273,17 +333,17 @@ if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 - upsert処理（既存レコードは更新、なければ作成）
 ```
 
-### 23. Feedsmithインストール
+### 24. Feedsmithインストール
 ```bash
 npm install feedsmith
 ```
 
-### 24. DOMPurifyインストール
+### 25. DOMPurifyインストール
 ```bash
 npm install isomorphic-dompurify
 ```
 
-### 25. lib/feed-fetcher.ts作成
+### 26. lib/feed-fetcher.ts作成
 ```typescript
 import { feedsmith } from 'feedsmith'
 
@@ -313,7 +373,7 @@ async function fetchFeed(feedUrl: string) {
 }
 ```
 
-### 26. lib/content-hash.ts作成
+### 27. lib/content-hash.ts作成
 ```typescript
 import { createHash } from 'crypto'
 
@@ -327,7 +387,7 @@ export function generateContentHash(item: {
 }
 ```
 
-### 27. lib/sanitize.ts作成
+### 28. lib/sanitize.ts作成
 ```typescript
 import DOMPurify from 'isomorphic-dompurify'
 
@@ -339,7 +399,7 @@ export function sanitizeHtml(dirty: string): string {
 }
 ```
 
-### 28. app/api/feeds/fetch/route.ts作成
+### 29. app/api/feeds/fetch/route.ts作成
 ```typescript
 // GET: 全フィード巡回取得（Cron用）
 // - 最終取得から15分以上経過したフィードのみ取得
@@ -352,7 +412,7 @@ export function sanitizeHtml(dirty: string): string {
 
 ## Phase 4: フロントエンド実装 (18タスク)
 
-### 29. app/page.tsx作成
+### 30. app/page.tsx作成
 ```typescript
 import { auth } from '@/auth'
 import { redirect } from 'next/navigation'
@@ -369,7 +429,7 @@ export default async function Home() {
 }
 ```
 
-### 30. components/auth/LoginButton.tsx作成
+### 31. components/auth/LoginButton.tsx作成
 ```typescript
 'use client'
 import { signIn } from 'next-auth/react'
@@ -383,7 +443,7 @@ export default function LoginButton() {
 }
 ```
 
-### 31. middleware.ts作成
+### 32. middleware.ts作成
 ```typescript
 export { auth as middleware } from '@/auth'
 
@@ -392,7 +452,7 @@ export const config = {
 }
 ```
 
-### 32. app/dashboard/page.tsx作成
+### 33. app/dashboard/page.tsx作成
 ```typescript
 // 記事一覧メイン画面
 // - ArticleTabsコンポーネント配置
@@ -401,7 +461,7 @@ export const config = {
 // - useBadgeUpdate統合（未読数取得してバッジ更新）
 ```
 
-### 33. app/dashboard/settings/page.tsx作成
+### 34. app/dashboard/settings/page.tsx作成
 ```typescript
 // グループ/フィード管理画面
 // - GroupListコンポーネント（ドラッグ&ドロップ）
@@ -410,7 +470,7 @@ export const config = {
 // - FeedListコンポーネント（一覧表示）
 ```
 
-### 34. components/group/GroupList.tsx作成
+### 35. components/group/GroupList.tsx作成
 ```typescript
 'use client'
 import { DndContext, closestCenter } from '@dnd-kit/core'
@@ -420,39 +480,39 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 // onDragEnd時にPATCH /api/group/reorder呼び出し
 ```
 
-### 35. @dnd-kit/coreインストール
+### 36. @dnd-kit/coreインストール
 ```bash
 npm install @dnd-kit/core @dnd-kit/sortable
 ```
 
-### 36. components/group/GroupForm.tsx作成
+### 37. components/group/GroupForm.tsx作成
 ```typescript
 // グループ名入力フォーム
 // mode: 'create' | 'edit'
 // onSubmit時にPOST /api/group または PUT /api/group/[id]
 ```
 
-### 37. components/feed/FeedForm.tsx作成
+### 38. components/feed/FeedForm.tsx作成
 ```typescript
 // フィードURL入力 + グループ選択ドロップダウン
 // URL検証（http/httpsのみ許可）
 // POST /api/feed で登録
 ```
 
-### 38. components/feed/FeedList.tsx作成
+### 39. components/feed/FeedList.tsx作成
 ```typescript
 // グループごとにフィード一覧表示
 // 削除ボタン（DELETE /api/feed/[id]）
 ```
 
-### 39. components/article/ArticleTabs.tsx作成
+### 40. components/article/ArticleTabs.tsx作成
 ```typescript
 'use client'
 // タブ: 「全て」「{グループ名}...」「未分類」
 // 選択タブをuseState管理、親コンポーネントにコールバック
 ```
 
-### 40. components/article/ArticleList.tsx作成
+### 41. components/article/ArticleList.tsx作成
 ```typescript
 // タブ選択に応じたフィルタリング
 // - 全て: すべての記事
@@ -460,14 +520,14 @@ npm install @dnd-kit/core @dnd-kit/sortable
 // - 未分類: GroupFeedに存在しない記事
 ```
 
-### 41. components/article/ArticleCard.tsx作成
+### 42. components/article/ArticleCard.tsx作成
 ```typescript
 // data-article-id={article.id} 属性付与
 // Intersection Observer監視対象
 // 既読状態に応じた視覚スタイル変更
 ```
 
-### 42. hooks/useIntersectionObserver.ts作成
+### 43. hooks/useIntersectionObserver.ts作成
 ```typescript
 'use client'
 import { useEffect, useRef } from 'react'
@@ -497,7 +557,7 @@ export function useIntersectionObserver(
 }
 ```
 
-### 43. hooks/useReadStatusBatch.ts作成
+### 44. hooks/useReadStatusBatch.ts作成
 ```typescript
 'use client'
 import { useCallback, useRef } from 'react'
@@ -526,7 +586,7 @@ export function useReadStatusBatch() {
 }
 ```
 
-### 44. components/article/ReadToggle.tsx作成
+### 45. components/article/ReadToggle.tsx作成
 ```typescript
 'use client'
 // トグルボタン: 「すべて表示」「未読のみ」
@@ -535,9 +595,9 @@ export function useReadStatusBatch() {
 
 ---
 
-## Phase 5: PWA機能実装 (9タスク)
+## Phase 5: PWA機能実装 (11タスク)
 
-### 45. app/manifest.ts作成
+### 46. app/manifest.ts作成
 ```typescript
 import { MetadataRoute } from 'next'
 
@@ -572,17 +632,17 @@ export default function manifest(): MetadataRoute.Manifest {
 }
 ```
 
-### 46. public/icons/ にPWAアイコン配置
+### 47. public/icons/ にPWAアイコン配置
 - `icon-192x192.png`
 - `icon-512x512.png`
 - maskable対応（セーフエリア確保）
 
-### 47. Workboxインストール
+### 48. Workboxインストール
 ```bash
 npm install workbox-webpack-plugin workbox-window
 ```
 
-### 48. public/sw.js作成
+### 49. public/sw.js作成
 ```javascript
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/7.0.0/workbox-sw.js')
 
@@ -602,12 +662,12 @@ workbox.routing.registerRoute(
 )
 ```
 
-### 49. Service Workerキャッシング戦略実装
+### 50. Service Workerキャッシング戦略実装
 - **NetworkFirst**: API (`/api/*`)
 - **CacheFirst**: 静的アセット（画像、フォント）
 - **StaleWhileRevalidate**: HTML/CSS/JS
 
-### 50. app/layout.tsx内でService Worker登録
+### 51. app/layout.tsx内でService Worker登録
 ```typescript
 'use client'
 import { useEffect } from 'react'
@@ -627,7 +687,7 @@ export default function RootLayout({ children }) {
 }
 ```
 
-### 51. components/pwa/InstallButton.tsx作成
+### 52. components/pwa/InstallButton.tsx作成
 ```typescript
 'use client'
 import { useEffect, useState } from 'react'
@@ -657,7 +717,7 @@ export default function InstallButton() {
 }
 ```
 
-### 52. public/sw.js内にBadging API実装
+### 53. public/sw.js内にBadging API実装
 ```javascript
 self.addEventListener('message', async (event) => {
   if (event.data.type === 'UPDATE_BADGE') {
@@ -673,7 +733,7 @@ self.addEventListener('message', async (event) => {
 })
 ```
 
-### 53. hooks/useBadgeUpdate.ts作成
+### 54. hooks/useBadgeUpdate.ts作成
 ```typescript
 'use client'
 import { useEffect } from 'react'
@@ -699,7 +759,12 @@ export function useBadgeUpdate(unreadCount: number) {
 }
 ```
 
-### 54. lib/security/url-validator.ts作成
+### 55. app/dashboard/page.tsx内でuseBadgeUpdate統合
+```typescript
+// 記事一覧読み込み時に未読数更新
+```
+
+### 56. lib/security/url-validator.ts作成
 ```typescript
 export function isValidFeedUrl(url: string): boolean {
   try {
@@ -729,7 +794,7 @@ export function isValidFeedUrl(url: string): boolean {
 }
 ```
 
-### 55. next.config.js内にCSP設定追加
+### 57. next.config.js内にCSP設定追加
 ```javascript
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -799,9 +864,15 @@ module.exports = nextConfig
 
 ## 実装順序の推奨
 
-1. **Phase 1-2を完了** → データベース基盤確立
-2. **Phase 3のAPI実装** → バックエンドロジック完成
-3. **Phase 4のUI実装** → ユーザー体験構築
-4. **Phase 5のPWA機能** → モバイル対応強化
+1. **Phase 1-2を完了** → データモデル設計完了
+2. **Phase 2.5でDB実体化** → データベース基盤確立（環境依存設定）
+3. **Phase 3のAPI実装** → バックエンドロジック完成
+4. **Phase 4のUI実装** → ユーザー体験構築
+5. **Phase 5のPWA機能** → モバイル対応強化
 
 各Phaseの完了時点で動作確認を行い、問題があれば即座に修正することを推奨します。
+
+**Phase 2.5の重要性:**
+- Phase 2完了後、スキーマ設計をレビュー可能
+- Phase 2.5で環境セットアップを集中実施
+- Phase 3開始時点で全ての前提条件が整っている状態を確保
