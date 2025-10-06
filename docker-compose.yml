@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # ローカル開発用MySQL（TiDB互換設定）
+  mysql:
+    image: mysql:8.0
+    container_name: groupfeeder-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: groupfeeder_root_pass
+      MYSQL_DATABASE: group_feeder
+      MYSQL_USER: groupfeeder_user
+      MYSQL_PASSWORD: groupfeeder_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

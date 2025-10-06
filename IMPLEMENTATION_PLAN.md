@@ -4,7 +4,7 @@
 PWA対応のRSSフィーダーアプリ「GroupFeeder」の完全実装計画。
 Next.js 15 (App Router) + TiDB + NextAuth.js v5を使用したモダンなフィード管理システム。
 
-**総タスク数**: 58 (Phase 2.5追加により56→58に更新)
+**総タスク数**: 59 (Task 16.5追加により58→59に更新)
 
 ---
 
@@ -214,7 +214,186 @@ model VerificationToken {
 
 ---
 
-## Phase 2.5: データベースセットアップ (3タスク)
+## Phase 2.5: データベースセットアップ (4タスク)
+
+### 16.5. Docker Compose MySQL環境構築（ローカル開発時のみ）
+
+**目的**: TiDBに置き換え可能なローカル開発環境を構築
+
+#### 作成ファイル1: `docker-compose.yml`
+
+```yaml
+version: '3.8'
+
+services:
+  # ローカル開発用MySQL（TiDB互換設定）
+  mysql:
+    image: mysql:8.0
+    container_name: groupfeeder-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: groupfeeder_root_pass
+      MYSQL_DATABASE: group_feeder
+      MYSQL_USER: groupfeeder_user
+      MYSQL_PASSWORD: groupfeeder_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+```
+
+#### 作成ファイル2: `docker/mysql/init.sql`
+
+```sql
+-- TiDB互換性を意識した初期設定
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
+-- データベース確認
+USE group_feeder;
+
+-- 必要に応じて初期データを追加
+```
+
+#### 作成ファイル3: `.env.local.example`
+
+```env
+# ローカル開発用（Docker MySQL）
+DATABASE_URL="mysql://groupfeeder_user:groupfeeder_pass@localhost:3306/group_feeder"
+
+# NextAuth.js
+NEXTAUTH_SECRET="your-secret-key-here"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="GOCSPX-your-google-client-secret"
+```
+
+#### 作成ファイル4: `.env.tidb.example`
+
+```env
+# TiDB本番環境用
+DATABASE_URL="mysql://user:password@gateway01.ap-northeast-1.prod.aws.tidbcloud.com:4000/group_feeder?sslaccept=strict"
+
+# NextAuth.js
+NEXTAUTH_SECRET="production-secret-key"
+NEXTAUTH_URL="https://your-production-url.vercel.app"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="production-google-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="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ret"
+```
+
+#### 作成ファイル5: `README.md`更新
+
+既存のREADME.mdに以下のセクションを追加:
+
+```markdown
+## 開発環境セットアップ
+
+### ローカル開発（Docker MySQL）
+
+1. Docker Composeでデータベース起動
+   ```bash
+   docker-compose up -d
+   ```
+
+2. データベース起動確認
+   ```bash
+   docker-compose ps
+   ```
+
+3. .envファイル作成
+   ```bash
+   cp .env.local.example .env
+   ```
+
+4. Prismaマイグレーション実行
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+5. 開発サーバー起動
+   ```bash
+   npm run dev
+   ```
+
+### 本番環境（TiDB）
+
+1. .envファイル作成
+   ```bash
+   cp .env.tidb.example .env
+   ```
+
+2. TiDB接続情報を.envに設定
+
+3. Prismaマイグレーション実行
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+### 環境切り替え
+
+```bash
+# ローカル開発に切り替え
+cp .env.local.example .env
+docker-compose up -d
+
+# TiDB本番に切り替え
+cp .env.tidb.example .env
+# TiDB接続情報を編集
+```
+
+### Docker コマンド
+
+```bash
+# 起動
+docker-compose up -d
+
+# 停止
+docker-compose down
+
+# ログ確認
+docker-compose logs -f mysql
+
+# データベースリセット（データ削除）
+docker-compose down -v
+docker-compose up -d
+```
+```
+
+#### TiDB互換性のポイント
+
+1. **MySQL 8.0を使用**: TiDBはMySQL 8.0互換
+2. **文字セット**: utf8mb4_unicode_ci（TiDBのデフォルト）
+3. **環境切り替え**: .envファイルのコピーだけで完結
+4. **@tidbcloud/prisma-adapter**: 環境変数で自動切り替え（Task 19で実装）
+
+#### .gitignore更新
+
+以下を追加:
+```
+# Environment files
+.env
+.env.local
+.env.tidb
+
+# Docker volumes
+docker/mysql/data/
+```
 
 ### 17. .envファイル作成
 
@@ -274,6 +453,9 @@ npx prisma db push --accept-data-loss
 ```
 
 ### 19. lib/prisma.ts作成
+
+**TiDB/ローカルMySQL自動切り替え対応版:**
+
 ```typescript
 import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@tidbcloud/prisma-adapter'
@@ -282,17 +464,21 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient({
-  adapter: PrismaAdapter()
-})
+// TiDB使用時のみアダプターを適用（自動判定）
+const useTiDBAdapter = process.env.DATABASE_URL?.includes('tidbcloud.com') ?? false
+
+export const prisma = globalForPrisma.prisma ?? new PrismaClient(
+  useTiDBAdapter ? { adapter: PrismaAdapter() } : {}
+)
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 ```
 
 **補足:**
 - `globalForPrisma`パターンは開発時のホットリロード対策
-- TiDB使用時は`@tidbcloud/prisma-adapter`が性能最適化を提供
-- ローカルMySQL/SQLiteの場合はadapterを省略可能
+- DATABASE_URLに`tidbcloud.com`が含まれる場合のみTiDBアダプター使用
+- ローカルMySQL使用時は通常のPrismaClientを使用
+- 環境切り替えが.envファイルの変更だけで完結
 
 ---
 
