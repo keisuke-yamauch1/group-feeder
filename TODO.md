@@ -199,8 +199,9 @@
   - 階層的重複検出: guid→link→contentHash
   ✅ 完了日: 2025-10-12
 
-- [ ] 27. lib/content-hash.ts作成
+- [x] 27. lib/content-hash.ts作成
   - title+description+pubDateからCRCハッシュ生成関数
+  ✅ 完了日: 2025-10-12
 
 - [ ] 28. lib/sanitize.ts作成
   - DOMPurifyラッパー
