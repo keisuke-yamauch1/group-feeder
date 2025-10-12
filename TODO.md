@@ -203,9 +203,10 @@
   - title+description+pubDateからCRCハッシュ生成関数
   ✅ 完了日: 2025-10-12
 
-- [ ] 28. lib/sanitize.ts作成
+- [x] 28. lib/sanitize.ts作成
   - DOMPurifyラッパー
   - HTMLサニタイズ関数
+  ✅ 完了日: 2025-10-12
 
 - [ ] 29. app/api/feeds/fetch/route.ts作成
   - 全フィード巡回
