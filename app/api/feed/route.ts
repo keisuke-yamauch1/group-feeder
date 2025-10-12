@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import { isValidFeedUrl } from '@/lib/security/url-validator'
 
 const USER_AGENT = 'GroupFeeder/1.0'
 
@@ -43,15 +44,6 @@ function parseBody(raw: unknown): FeedRequestBody | null {
   return { url: trimmedUrl, groupIds: parsedGroupIds }
 }
 
-function isValidUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url)
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-  } catch {
-    return false
-  }
-}
-
 async function ensureGroupsBelongToUser(groupIds: number[], userId: string): Promise<boolean> {
   if (groupIds.length === 0) {
     return true
@@ -88,7 +80,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid request payload' }, { status: 400 })
   }
 
-  if (!isValidUrl(body.url)) {
+  if (!isValidFeedUrl(body.url)) {
     return NextResponse.json({ error: 'Invalid feed url' }, { status: 400 })
   }
 

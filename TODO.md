@@ -297,16 +297,18 @@
 
 ## Phase 5: PWA機能実装 (11タスク)
 
-- [ ] 46. app/manifest.ts作成
+- [x] 46. app/manifest.ts作成
   - name: GroupFeeder
   - short_name, theme_color, background_color
   - display: standalone
   - icons配置
+  ✅ 完了日: 2025-10-12
 
-- [ ] 47. public/icons/配下にPWAアイコン配置
+- [x] 47. public/icons/配下にPWAアイコン配置
   - 192x192
   - 512x512
   - maskable対応
+  ✅ 完了日: 2025-10-12
 
 - [ ] 48. Workboxインストール
   ```bash
@@ -340,12 +342,14 @@
 - [ ] 55. app/dashboard/page.tsx内でuseBadgeUpdate統合
   - 記事一覧読み込み時に未読数更新
 
-- [ ] 56. lib/security/url-validator.ts作成
+- [x] 56. lib/security/url-validator.ts作成
   - SSRF対策: http/httpsのみ許可
   - 内部IPアドレス拒否
+  ✅ 完了日: 2025-10-12
 
-- [ ] 57. next.config.js内にCSP設定追加
+- [x] 57. next.config.ts内にCSP設定追加
   - Content-Security-Policy headers
+  ✅ 完了日: 2025-10-12
 
 ---
 
