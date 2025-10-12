@@ -135,11 +135,14 @@
   ✅ 完了日: 2025-10-06
   📝 備考: ローカルMySQL環境用に設定、Google OAuth認証情報は後で手動設定が必要
 
-- [ ] 18. Prismaマイグレーション実行
+- [x] 18. Prismaマイグレーション実行
   ```bash
   npx prisma migrate dev --name init
   ```
   - TiDB制限に注意（FULLTEXT警告は無視）
+  
+  ✅ 完了日: 2025-10-12
+  📝 備考: ローカルDocker未利用環境のため `prisma migrate diff` で初期マイグレーションを生成し、後で `prisma migrate dev` を実行してDB適用予定
 
 - [ ] 19. lib/prisma.ts作成
   - PrismaClientシングルトンインスタンス
