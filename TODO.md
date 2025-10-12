@@ -187,10 +187,12 @@
 
   ✅ 完了日: 2025-10-12
 
-- [ ] 25. DOMPurifyインストール
+- [x] 25. DOMPurifyインストール
   ```bash
   npm install isomorphic-dompurify
   ```
+  ✅ 完了日: 2025-10-12
+
 
 - [ ] 26. lib/feed-fetcher.ts作成
   - Feedsmith使用
