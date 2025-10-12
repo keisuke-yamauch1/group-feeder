@@ -194,9 +194,10 @@
   ✅ 完了日: 2025-10-12
 
 
-- [ ] 26. lib/feed-fetcher.ts作成
+- [x] 26. lib/feed-fetcher.ts作成
   - Feedsmith使用
   - 階層的重複検出: guid→link→contentHash
+  ✅ 完了日: 2025-10-12
 
 - [ ] 27. lib/content-hash.ts作成
   - title+description+pubDateからCRCハッシュ生成関数
