@@ -180,10 +180,12 @@
 
   ✅ 完了日: 2025-10-12
 
-- [ ] 24. Feedsmithインストール
+- [x] 24. Feedsmithインストール
   ```bash
   npm install feedsmith
   ```
+
+  ✅ 完了日: 2025-10-12
 
 - [ ] 25. DOMPurifyインストール
   ```bash
