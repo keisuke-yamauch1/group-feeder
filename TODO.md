@@ -227,9 +227,10 @@
   - signIn('google')呼び出し
   ✅ 完了日: 2025-10-12
 
-- [ ] 32. middleware.ts作成
+- [x] 32. middleware.ts作成
   - 認証保護ルート設定
   - /dashboard/*を保護
+  ✅ 完了日: 2025-10-12
 
 - [ ] 33. app/dashboard/page.tsx作成
   - 記事一覧メイン画面
