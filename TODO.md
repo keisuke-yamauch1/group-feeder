@@ -154,10 +154,12 @@
 
 ## Phase 3: コアAPI実装 (10タスク)
 
-- [ ] 20. app/api/group/route.ts作成
+- [x] 20. app/api/group/route.ts作成
   - POST: グループ新規作成
   - userId取得
   - sortIndex自動設定
+
+  ✅ 完了日: 2025-10-12
 
 - [ ] 21. app/api/group/[id]/route.ts作成
   - PUT: グループ名変更
