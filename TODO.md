@@ -315,32 +315,38 @@
   npm install workbox-webpack-plugin workbox-window
   ```
 
-- [ ] 49. public/sw.js作成
+- [x] 49. public/sw.js作成
   - Service Worker本体
   - Workboxインポート
   - キャッシング戦略定義
+  ✅ 完了日: 2025-10-12
 
-- [ ] 50. Service Workerキャッシング戦略実装
+- [x] 50. Service Workerキャッシング戦略実装
   - NetworkFirst: API
   - CacheFirst: 静的アセット
+  ✅ 完了日: 2025-10-12
 
-- [ ] 51. app/layout.tsx内でService Worker登録
+- [x] 51. app/layout.tsx内でService Worker登録
   - useEffect内でnavigator.serviceWorker.register('/sw.js')
+  ✅ 完了日: 2025-10-12
 
 - [ ] 52. components/pwa/InstallButton.tsx作成
   - beforeinstallpromptイベントハンドリング
   - インストールプロンプト表示
 
-- [ ] 53. public/sw.js内にBadging API実装
+- [x] 53. public/sw.js内にBadging API実装
   - self.addEventListener('message', setAppBadge処理)
+  ✅ 完了日: 2025-10-12
 
-- [ ] 54. hooks/useBadgeUpdate.ts作成
+- [x] 54. hooks/useBadgeUpdate.ts作成
   - 未読数取得
   - navigator.setAppBadge()呼び出し
   - 機能検出
+  ✅ 完了日: 2025-10-12
 
-- [ ] 55. app/dashboard/page.tsx内でuseBadgeUpdate統合
+- [x] 55. app/dashboard/page.tsx内でuseBadgeUpdate統合
   - 記事一覧読み込み時に未読数更新
+  ✅ 完了日: 2025-10-12
 
 - [x] 56. lib/security/url-validator.ts作成
   - SSRF対策: http/httpsのみ許可
@@ -371,9 +377,9 @@
 進捗: 0/18 (0%)
 
 ### Phase 5: PWA機能実装
-進捗: 0/11 (0%)
+進捗: 6/11 (55%)
 
-**総進捗: 18/59 (31%)**
+**総進捗: 24/59 (41%)**
 
 ---
 
@@ -396,4 +402,4 @@
 
 ---
 
-**最終更新**: 2025-10-06 (Task 17完了: .envファイル作成)
+**最終更新**: 2025-10-12 (Task 55完了: Dashboardでバッジ更新連携)

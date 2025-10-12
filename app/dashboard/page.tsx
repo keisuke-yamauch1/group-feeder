@@ -1,5 +1,5 @@
 import { auth } from '@/auth'
-import { BadgeUpdaterPlaceholder } from './_components/BadgeUpdaterPlaceholder'
+import { BadgeUpdater } from './_components/BadgeUpdater'
 
 type PlaceholderProps = {
   title: string
@@ -17,10 +17,12 @@ function SectionPlaceholder({ title, description }: PlaceholderProps) {
 
 export default async function DashboardPage() {
   const session = await auth()
+  // TODO: Replace with actual unread count once feed aggregation API is available.
+  const unreadCount = 0
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-white">
-      <BadgeUpdaterPlaceholder />
+      <BadgeUpdater unreadCount={unreadCount} />
       <header className="border-b border-slate-800/60 bg-slate-950/80 px-8 py-6">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
