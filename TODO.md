@@ -161,9 +161,11 @@
 
   ✅ 完了日: 2025-10-12
 
-- [ ] 21. app/api/group/[id]/route.ts作成
+- [x] 21. app/api/group/[id]/route.ts作成
   - PUT: グループ名変更
   - PATCH: sortIndex一括更新
+
+  ✅ 完了日: 2025-10-12
 
 - [ ] 22. app/api/feed/route.ts作成
   - POST: フィードURL登録
