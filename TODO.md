@@ -263,29 +263,35 @@
   - フィード一覧プレースホルダーを作成し、削除処理などは後続タスクに委譲
   ✅ 完了日: 2025-10-12
 
-- [ ] 40. components/article/ArticleTabs.tsx作成
+- [x] 40. components/article/ArticleTabs.tsx作成
   - 全て/ユーザーグループ/未分類タブ切り替え
+  ✅ 完了日: 2025-10-12
 
-- [ ] 41. components/article/ArticleList.tsx作成
+- [x] 41. components/article/ArticleList.tsx作成
   - 記事一覧
   - タブ選択に応じたフィルタリング
+  ✅ 完了日: 2025-10-12
 
-- [ ] 42. components/article/ArticleCard.tsx作成
+- [x] 42. components/article/ArticleCard.tsx作成
   - 記事カード
   - data-article-id属性付与
   - Intersection Observer用
+  ✅ 完了日: 2025-10-12
 
-- [ ] 43. hooks/useIntersectionObserver.ts作成
+- [x] 43. hooks/useIntersectionObserver.ts作成
   - 共有Observer
   - threshold: 0.5
   - 500msデバウンス
+  ✅ 完了日: 2025-10-12
 
-- [ ] 44. hooks/useReadStatusBatch.ts作成
+- [x] 44. hooks/useReadStatusBatch.ts作成
   - 既読状態バッチ更新Hook
   - Set<articleId>キューイング
+  ✅ 完了日: 2025-10-12
 
-- [ ] 45. components/article/ReadToggle.tsx作成
+- [x] 45. components/article/ReadToggle.tsx作成
   - 既読/未読フィルタートグルボタン
+  ✅ 完了日: 2025-10-12
 
 ---
 
