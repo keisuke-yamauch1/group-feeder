@@ -237,8 +237,9 @@
   - タブ切り替えUI配置
   ✅ 完了日: 2025-10-12
 
-- [ ] 34. app/dashboard/settings/page.tsx作成
-  - グループ/フィード管理画面
+- [x] 34. app/dashboard/settings/page.tsx作成
+  - グループ/フィード管理用レイアウトとプレースホルダーを追加
+  ✅ 完了日: 2025-10-12
 
 - [ ] 35. components/group/GroupList.tsx作成
   - グループ一覧表示
