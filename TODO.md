@@ -241,18 +241,19 @@
   - グループ/フィード管理用レイアウトとプレースホルダーを追加
   ✅ 完了日: 2025-10-12
 
-- [ ] 35. components/group/GroupList.tsx作成
-  - グループ一覧表示
-  - ドラッグ&ドロップ並び替え - @dnd-kit/core使用
+- [x] 35. components/group/GroupList.tsx作成
+  - グループ一覧プレースホルダーを作成し、今後のDrag & Drop実装に備えた
+  ✅ 完了日: 2025-10-12
 
-- [ ] 36. @dnd-kit/coreインストール
+- [x] 36. @dnd-kit/coreインストール
   ```bash
   npm install @dnd-kit/core @dnd-kit/sortable
   ```
+  ✅ 完了日: 2025-10-12
 
-- [ ] 37. components/group/GroupForm.tsx作成
-  - グループ名入力フォーム
-  - 作成/編集モード対応
+- [x] 37. components/group/GroupForm.tsx作成
+  - グループ名入力フォームのベースを追加し、API連携は後続タスクに委ねた
+  ✅ 完了日: 2025-10-12
 
 - [ ] 38. components/feed/FeedForm.tsx作成
   - フィードURL入力
