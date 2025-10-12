@@ -208,10 +208,11 @@
   - HTMLサニタイズ関数
   ✅ 完了日: 2025-10-12
 
-- [ ] 29. app/api/feeds/fetch/route.ts作成
+- [x] 29. app/api/feeds/fetch/route.ts作成
   - 全フィード巡回
   - 15分間隔制御
   - ETag/Last-Modified対応
+  ✅ 完了日: 2025-10-12
 
 ---
 
