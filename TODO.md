@@ -218,12 +218,14 @@
 
 ## Phase 4: フロントエンド実装 (18タスク)
 
-- [ ] 30. app/page.tsx作成
+- [x] 30. app/page.tsx作成
   - 未認証: Google Loginボタン表示
   - 認証済み: /dashboardリダイレクト
+  ✅ 完了日: 2025-10-12
 
-- [ ] 31. components/auth/LoginButton.tsx作成
+- [x] 31. components/auth/LoginButton.tsx作成
   - signIn('google')呼び出し
+  ✅ 完了日: 2025-10-12
 
 - [ ] 32. middleware.ts作成
   - 認証保護ルート設定
