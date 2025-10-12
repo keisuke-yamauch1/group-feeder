@@ -232,9 +232,10 @@
   - /dashboard/*を保護
   ✅ 完了日: 2025-10-12
 
-- [ ] 33. app/dashboard/page.tsx作成
+- [x] 33. app/dashboard/page.tsx作成
   - 記事一覧メイン画面
   - タブ切り替えUI配置
+  ✅ 完了日: 2025-10-12
 
 - [ ] 34. app/dashboard/settings/page.tsx作成
   - グループ/フィード管理画面
