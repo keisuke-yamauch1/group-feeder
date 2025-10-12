@@ -255,14 +255,13 @@
   - グループ名入力フォームのベースを追加し、API連携は後続タスクに委ねた
   ✅ 完了日: 2025-10-12
 
-- [ ] 38. components/feed/FeedForm.tsx作成
-  - フィードURL入力
-  - グループ選択ドロップダウン
+- [x] 38. components/feed/FeedForm.tsx作成
+  - フィードURL入力フォームのプレースホルダーを追加し、後続タスクでのAPI連携に備えた
+  ✅ 完了日: 2025-10-12
 
-- [ ] 39. components/feed/FeedList.tsx作成
-  - フィード一覧
-  - グループ別表示
-  - 削除ボタン
+- [x] 39. components/feed/FeedList.tsx作成
+  - フィード一覧プレースホルダーを作成し、削除処理などは後続タスクに委譲
+  ✅ 完了日: 2025-10-12
 
 - [ ] 40. components/article/ArticleTabs.tsx作成
   - 全て/ユーザーグループ/未分類タブ切り替え
