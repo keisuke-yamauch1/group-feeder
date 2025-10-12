@@ -310,10 +310,11 @@
   - maskable対応
   ✅ 完了日: 2025-10-12
 
-- [ ] 48. Workboxインストール
+- [x] 48. Workboxインストール
   ```bash
   npm install workbox-webpack-plugin workbox-window
   ```
+  ✅ 完了日: 2025-10-12
 
 - [x] 49. public/sw.js作成
   - Service Worker本体
@@ -330,9 +331,10 @@
   - useEffect内でnavigator.serviceWorker.register('/sw.js')
   ✅ 完了日: 2025-10-12
 
-- [ ] 52. components/pwa/InstallButton.tsx作成
+- [x] 52. components/pwa/InstallButton.tsx作成
   - beforeinstallpromptイベントハンドリング
   - インストールプロンプト表示
+  ✅ 完了日: 2025-10-12
 
 - [x] 53. public/sw.js内にBadging API実装
   - self.addEventListener('message', setAppBadge処理)
