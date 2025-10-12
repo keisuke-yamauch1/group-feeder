@@ -174,9 +174,11 @@
 
   ✅ 完了日: 2025-10-12
 
-- [ ] 23. app/api/read-status/route.ts作成
+- [x] 23. app/api/read-status/route.ts作成
   - PUT: 既読状態更新
   - バッチ更新対応 - 複数articleId配列受付
+
+  ✅ 完了日: 2025-10-12
 
 - [ ] 24. Feedsmithインストール
   ```bash
