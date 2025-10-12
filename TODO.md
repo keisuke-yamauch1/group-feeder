@@ -167,10 +167,12 @@
 
   ✅ 完了日: 2025-10-12
 
-- [ ] 22. app/api/feed/route.ts作成
+- [x] 22. app/api/feed/route.ts作成
   - POST: フィードURL登録
   - Feedsmith検証
   - グループ割り当て
+
+  ✅ 完了日: 2025-10-12
 
 - [ ] 23. app/api/read-status/route.ts作成
   - PUT: 既読状態更新
